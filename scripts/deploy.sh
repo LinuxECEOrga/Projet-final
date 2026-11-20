@@ -3,6 +3,24 @@
 # Se placer dans le dossier du dépôt
 cd "$(dirname "$0")/.." || exit 1
 
+# Vérifier que Docker est installé
+if ! command -v docker >/dev/null 2>&1; then
+    echo "Erreur : Docker n'est pas installé."
+    exit 1
+fi
+
+# Vérifier que curl est installé
+if ! command -v curl >/dev/null 2>&1; then
+    echo "Erreur : curl n'est pas installé."
+    exit 1
+fi
+
+# Vérifier que le moteur Docker fonctionne
+if ! docker info >/dev/null 2>&1; then
+    echo "Erreur : le moteur Docker ne fonctionne pas."
+    exit 1
+fi
+
 # Récupérer les dernières modifications depuis GitHub
 if ! git pull origin main; then
     echo "Erreur : impossible de récupérer les modifications."
@@ -24,27 +42,11 @@ if ! docker run -d --name site -p 8081:80 projet-final; then
     exit 1
 fi
 
-# Vérifier que le site répond avec curl
-if curl -fsS http://localhost:8081 > /dev/null; then
+# Vérifier que le site répond avec plusieurs tentatives
+if curl --retry 5 --retry-connrefused --retry-delay 2 \
+    -fsS http://localhost:8081 > /dev/null; then
     echo "Déploiement réussi"
 else
-    echo "Erreur : le site ne répond pas."
-    exit 1
-fi
-# Vérifier la disponibilité de Docker
-if ! command -v docker >/dev/null 2>&1; then
-    echo "Erreur : Docker n'est pas installé."
-    exit 1
-fi
-
-# Vérifier la disponibilité de curl
-if ! command -v curl >/dev/null 2>&1; then
-    echo "Erreur : curl n'est pas installé."
-    exit 1
-fi
-
-# Vérifier que le moteur Docker fonctionne
-if ! docker info >/dev/null 2>&1; then
-    echo "Erreur : le moteur Docker ne fonctionne pas."
+    echo "Erreur : le site ne répond pas après plusieurs tentatives."
     exit 1
 fi
