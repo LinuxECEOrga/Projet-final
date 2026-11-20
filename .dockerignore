@@ -1,0 +1,5 @@
+# Exclure le dépôt Git de la construction Docker
+.git
+
+# Exclure les fichiers temporaires
+*.log
