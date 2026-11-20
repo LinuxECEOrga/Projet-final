@@ -42,11 +42,15 @@ if ! docker run -d --name site -p 8081:80 projet-final; then
     exit 1
 fi
 
-# Vérifier que le site répond avec plusieurs tentatives
-if curl --retry 5 --retry-connrefused --retry-delay 2 \
-    -fsS http://localhost:8081 > /dev/null; then
-    echo "Déploiement réussi"
-else
-    echo "Erreur : le site ne répond pas après plusieurs tentatives."
-    exit 1
-fi
+# Attendre que le site soit disponible
+for i in {1..10}; do
+    if curl -fsS http://127.0.0.1:8081/ > /dev/null; then
+        echo "Déploiement réussi"
+        exit 0
+    fi
+
+    sleep 2
+done
+
+echo "Erreur : le site ne répond pas après plusieurs tentatives."
+exit i
