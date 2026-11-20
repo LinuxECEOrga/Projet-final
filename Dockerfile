@@ -2,3 +2,5 @@
 FROM php:8.4-apache
 # Copier uniquement le site dans le dossier public d'Apache
 COPY site/ /var/www/html/
+# Documenter le port HTTP utilisé par Apache
+EXPOSE 80
