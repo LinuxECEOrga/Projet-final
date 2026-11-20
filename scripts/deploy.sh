@@ -31,3 +31,20 @@ else
     echo "Erreur : le site ne répond pas."
     exit 1
 fi
+# Vérifier la disponibilité de Docker
+if ! command -v docker >/dev/null 2>&1; then
+    echo "Erreur : Docker n'est pas installé."
+    exit 1
+fi
+
+# Vérifier la disponibilité de curl
+if ! command -v curl >/dev/null 2>&1; then
+    echo "Erreur : curl n'est pas installé."
+    exit 1
+fi
+
+# Vérifier que le moteur Docker fonctionne
+if ! docker info >/dev/null 2>&1; then
+    echo "Erreur : le moteur Docker ne fonctionne pas."
+    exit 1
+fi
