@@ -53,4 +53,4 @@ for i in {1..10}; do
 done
 
 echo "Erreur : le site ne répond pas après plusieurs tentatives."
-exit i
+exit 1
